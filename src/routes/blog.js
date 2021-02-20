@@ -38,6 +38,26 @@ router.post('/create',(req,res) =>{
       res.status(500).send(e)
     })
   })
+
+  router.get('/getCategory/:category',async (req,res) => {
+    const category = req.params.category
+    console.log(category)
+    try{
+      const blogs = await Blog.find()
+      var matchedBlogs =[]
+      var blog
+      for (blog in blogs) {
+        if(blogs[blog].categories.includes(category)){
+          console.log(blogs[blog])
+          matchedBlogs.push(blogs[blog])
+        }
+      }
+      res.send(matchedBlogs)
+    } catch(e) {
+      res.status(500).send()
+    }
+   
+  })
   
 
 

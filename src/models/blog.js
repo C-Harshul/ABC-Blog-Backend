@@ -29,6 +29,11 @@ const Blog = new mongoose.model('Blog',{
                throw new Error('Give a valid Url')
            }
        }
+   },
+   categories: {
+       type: mongoose.Schema.Types.Mixed,
+       required:true,
+       default: ['blogs']
    }
 })
 
