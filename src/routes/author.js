@@ -28,4 +28,44 @@ router.get('/', async(req,res) => {
     }
 })
 
+router.patch('/:id',async (req,res) => {
+    const updates = Object.keys(req.body)
+    const allowedUpdates = ['name','email','password']
+    const isValid = updates.every((update) => allowedUpdates.includes(update))
+
+    if(!isValid) {
+        return res.status(400).send({error : 'Invalid update request'})
+    }
+    
+    try { 
+        const _id = req.params.id
+        const author = await Author.findById(_id)
+        console.log(_id,author)
+        if(!author) {
+        return res.status(404).send()
+      } 
+      updates.forEach((update) => {
+          author[update] = req.body[update]
+      })    
+      await author.save()
+      res.send(author)
+    } catch(e) {
+        res.status(500).send()
+    }
+    
+
+})
+
+router.delete('/:id', async (req,res) =>{
+    try{
+      const author = await Author.findByIdAndDelete(req.params.id)
+      if(!author) {
+         return res.status(404).send()
+      }
+      res.send(author)
+    } catch(e) {
+      res.status(500).send()  
+    }
+})
+
 module.exports = router
