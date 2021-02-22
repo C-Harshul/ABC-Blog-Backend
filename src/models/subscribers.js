@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 
-const Subscriber = mongoose.model('Subscriber',{
+const subscriberSchema = mongoose.Schema({
     name:{
         type:String,
     },
@@ -14,11 +14,18 @@ const Subscriber = mongoose.model('Subscriber',{
             }
         }
     },
-    timeStamp:{
-        type:String,
-        require:true,
-    }
+},{
+    timestamps:true
+  }
+)
+
+subscriberSchema.virtual('feedbacks',{
+    ref:'Feedback',
+    localField :'_id',
+    foreignField:'subscriber'
 })
+
+const Subscriber = mongoose.model('Subscriber',subscriberSchema)
 
 
 module.exports = Subscriber

@@ -11,10 +11,6 @@ const blogSchema = new mongoose.Schema({
        type:String,
        required:true
    },
-
-   link:{
-       type: String,
-   },
    link:{
        type:String,
        validate(val){
@@ -31,11 +27,17 @@ const blogSchema = new mongoose.Schema({
    author: {
        type: mongoose.Schema.Types.ObjectId,
        ref:'Author'
-   }
+   },
  },{
   timestamps:true
  }
 )
+
+blogSchema.virtual('feedbacks',{
+    ref:'Feedback',
+    localField :'_id',
+    foreignField:'blog'
+})
 
 const Blog = mongoose.model('Blog',blogSchema)
 module.exports = Blog
