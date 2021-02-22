@@ -31,13 +31,33 @@ router.post('/create',auth,(req,res) =>{
       if(Blogs.length == 0){
         res.status(404).send()
       } else {
-
+        Blogs.forEach(async(Blog) =>{
+          await Blog.populate('feedbacks').execPopulate()
+          Blog.feedbacks = Blog.feedbacks
+          console.log(Blog.feedbacks)
+        })
         res.send(Blogs)
       }
     }).catch((e) =>{
       res.status(500).send(e)
     })
   })
+
+router.get('/:id/feedback',async (req,res) =>{
+  
+  try{
+    const blog = await Blog.findById(req.params.id)
+    await blog.populate('feedbacks').execPopulate()
+    if(blog.feedbacks.length === 0){
+     return res.status(404).send()
+    }
+    console.log(blog.feedbacks)
+    res.send(blog.feedbacks)
+  } catch(e) {
+    res.status(500).send()
+  }
+
+})
 
   router.get('/getCategory/:category',async (req,res) => {
     const category = req.params.category
