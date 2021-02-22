@@ -1,6 +1,7 @@
 const express = require('express')
 const router = new express.Router()
 const Author = require('../models/author')
+const auth = require('../middleware/auth')
 
 router.post('/new',async (req,res) =>{
 
@@ -24,15 +25,37 @@ router.post('/login', async(req,res) =>{
         if(!author){
           return res.status(404).send({error : "Authentication failed"})
          }
-       const tokens = await author.generateAuthToken()
-       res.send({author,tokens})
+       const token = await author.generateAuthToken()
+       res.send({author,token})
     
     } catch(e) {
        res.status(400).send()  
     }
 })
 
-router.get('/', async(req,res) => {
+router.get('/logout',auth, async(req,res) => {
+    const currentToken = req.token
+    const author = req.author
+    const activeTokens = author.tokens
+    const newTokens = []
+    //console.log(activeTokens)
+    try {
+        activeTokens.forEach((token) => {
+            if( token.token !== currentToken){
+
+                newTokens.push(token)
+            }
+        })
+        author.tokens = newTokens
+        console.log(author)
+        await author.save()
+        res.send()
+    } catch(e) {
+       res.status(500).send()
+    }
+})
+
+router.get('/',async(req,res) => {
     try{
         const filter = req.query
         console.log(filter)
@@ -46,7 +69,7 @@ router.get('/', async(req,res) => {
     }
 })
 
-router.patch('/:id',async (req,res) => {
+router.patch('/me',auth,async (req,res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ['name','email','password']
     const isValid = updates.every((update) => allowedUpdates.includes(update))
@@ -56,9 +79,8 @@ router.patch('/:id',async (req,res) => {
     }
     
     try { 
-        const _id = req.params.id
+        const _id = req.author._id
         const author = await Author.findById(_id)
-        console.log(_id,author)
         if(!author) {
         return res.status(404).send()
       } 
@@ -74,9 +96,9 @@ router.patch('/:id',async (req,res) => {
 
 })
 
-router.delete('/:id', async (req,res) =>{
+router.delete('/me', auth,async (req,res) =>{
     try{
-      const author = await Author.findByIdAndDelete(req.params.id)
+      const author = await Author.findByIdAndDelete(req.author._id)
       if(!author) {
          return res.status(404).send()
       }

@@ -2,12 +2,13 @@ const express = require('express');
 const router = express.Router();
 const Blog = require('../models/blog')
 const mail = require('../functions/mailer')
+const auth = require('../middleware/auth')
 require('../db/mongoose')
 
-router.post('/create',(req,res) =>{
+router.post('/create',auth,(req,res) =>{
 
     const blog = new Blog(req.body) 
-    
+    blog.author = req.author._id
     blog.save().then((blog)=>{
       const mailMessage = "Checkout our new blog at " +blog.link 
       mail(mailMessage,(error,result) =>{
@@ -58,7 +59,7 @@ router.post('/create',(req,res) =>{
    
   })
   
-  router.patch('/:id', async (req,res) => {
+  router.patch('/:id',auth, async (req,res) => {
     const id = req.params.id
     const updates = Object.keys(req.body)
     const allowed = ['categories','link','body']
@@ -70,7 +71,7 @@ router.post('/create',(req,res) =>{
 
     try{
        
-      const blog = await Blog.findById(id)
+      const blog = await Blog.findOne({_id :id, author : req.author.id})
       if(!blog) {
         return res.status(404).send() 
        }

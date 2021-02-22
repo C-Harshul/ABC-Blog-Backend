@@ -37,6 +37,12 @@ const authorSchema = mongoose.Schema({
  }
 )
 
+authorSchema.virtual('blogs' ,{
+    ref: 'Blog',
+    localField : '_id',
+    foreignField: 'author'
+})
+
 authorSchema.methods.generateAuthToken = async function() {
     const author = this
     console.log(author)
