@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 
 
-const Blog = new mongoose.model('Blog',{
+const blogSchema = new mongoose.Schema({
    title: {
        type:String,
        required:true,
@@ -18,10 +18,6 @@ const Blog = new mongoose.model('Blog',{
    link:{
        type: String,
    },
-   timeStamp:{
-       type: String,
-       required:true
-   },
    link:{
        type:String,
        validate(val){
@@ -31,10 +27,18 @@ const Blog = new mongoose.model('Blog',{
        }
    },
    categories: {
-       type: mongoose.Schema.Types.Mixed,
+       type: mongoose.Schema.Types.Array,
        required:true,
        default: ['blogs']
+   },
+   author: {
+       type: mongoose.Schema.Types.ObjectId,
+       ref:'Author'
    }
-})
+ },{
+  timestamps:true
+ }
+)
 
+const Blog = mongoose.model('Blog',blogSchema)
 module.exports = Blog
