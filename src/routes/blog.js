@@ -43,10 +43,11 @@ router.post('/create',auth,(req,res) =>{
     const category = req.params.category
     console.log(category)
     try{
-      const blogs = await Blog.find()
+      const blogs = await Blog.find({})
       var matchedBlogs =[]
       var blog
       for (blog in blogs) {
+        console.log(blogs[blog])
         if(blogs[blog].categories.includes(category)){
           console.log(blogs[blog])
           matchedBlogs.push(blogs[blog])

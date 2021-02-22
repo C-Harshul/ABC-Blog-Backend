@@ -55,15 +55,25 @@ router.get('/logout',auth, async(req,res) => {
     }
 })
 
-router.get('/',async(req,res) => {
+router.get('/logoutAll',auth,async(req,res) =>{
     try{
-        const filter = req.query
-        console.log(filter)
-        const authors = await Author.find(filter)
-        if(!authors) {
+        req.author.tokens =[]
+         await req.author.save()
+        res.send()  
+    } catch(e) {
+        res.status(500).send(e)
+    }
+})
+
+router.get('/profile',auth,async(req,res) => {
+    try{
+
+        const author = await Author.findOne({_id:req.author._id})
+        if(!author) {
            return res.status(404).send()
         }
-        res.send(authors)
+        await author.populate({'path':'blogs'}).execPopulate()
+        res.send({'About Me': author,Blogs:author.blogs})
     } catch(e) {
         res.status(500).send()
     }

@@ -24,7 +24,7 @@ const blogSchema = new mongoose.Schema({
        }
    },
    categories: {
-       type: mongoose.Schema.Types.Array,
+       type: mongoose.Schema.Types.Mixed,
        required:true,
        default: ['blogs']
    },
