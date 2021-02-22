@@ -1,7 +1,7 @@
 const express = require('express')
 const router = new express.Router()
 const Author = require('../models/author')
-const auth = require('../middleware/auth')
+const auth = require('../middleware/author_auth')
 
 router.post('/new',async (req,res) =>{
 

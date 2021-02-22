@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Blog = require('../models/blog')
 const mail = require('../functions/mailer')
-const auth = require('../middleware/auth')
+const auth = require('../middleware/author_auth')
 require('../db/mongoose')
 
 router.post('/create',auth,(req,res) =>{

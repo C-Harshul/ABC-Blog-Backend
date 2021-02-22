@@ -4,6 +4,7 @@ const morgan = require('morgan')
 require('./db/mongoose')
 const blogRoutes = require('./routes/blog')
 const authorRoutes = require('./routes/author')
+const subscriberRoutes = require('./routes/subscriber')
 const emailRoutes = require('./routes/email')
 
 const app = express()
@@ -14,6 +15,7 @@ app.use(morgan('dev'))
 
 app.use('/blog',blogRoutes)
 app.use('/author',authorRoutes)
+app.use('/subscriber',subscriberRoutes)
 app.use('/email',emailRoutes)
 
 app.listen(port,() =>{
