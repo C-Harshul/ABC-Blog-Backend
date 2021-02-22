@@ -22,7 +22,7 @@ router.post('/create',(req,res) =>{
     })
   })
   
-  router.get('/get',(req,res) => {
+  router.get('/',(req,res) => {
     
     const filter = req.query
     
@@ -87,15 +87,17 @@ router.post('/create',(req,res) =>{
 
   })
 
-  router.delete(':/id' , async(req,res) =>{
+  router.delete('/:id' , async(req,res) =>{
        try{
         const id = req.params.id
+        console.log(id)
         const blog =  await Blog.findById(id)
+      
         if(!blog) {
          return res.status(404).send() 
         }
-        await blog.remove()
-        
+        blog.remove()
+        res.send()
        } catch(e) {
           res.status(500).send()
        }
