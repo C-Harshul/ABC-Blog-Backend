@@ -1,17 +1,26 @@
 const express = require('express');
 const router = express.Router();
 const Blog = require('../models/blog')
+const Subscribers = require('../models/subscribers')
 const mail = require('../functions/mailer')
-const auth = require('../middleware/author_auth')
+const auth = require('../middleware/author_auth');
+const Subscriber = require('../models/subscribers');
 require('../db/mongoose')
 
-router.post('/create',auth,(req,res) =>{
+router.post('/create',auth,async(req,res) =>{
 
     const blog = new Blog(req.body) 
+    const subscribers = await Subscribers.find()
+    
+    const mailIds = []
+    subscribers.forEach((subscriber) => {
+        mailIds.push(subscriber.email)
+    })
+
     blog.author = req.author._id
     blog.save().then((blog)=>{
       const mailMessage = "Checkout our new blog at " +blog.link 
-      mail(mailMessage,(error,result) =>{
+      mail(mailMessage,mailIds,(error,result) =>{
           if(error) {
               res.status(500).send(error)
           } else {

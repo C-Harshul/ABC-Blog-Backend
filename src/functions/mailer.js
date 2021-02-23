@@ -9,9 +9,9 @@ var transporter = nodemailer.createTransport({
     }
   });
 
-  const mailIds = ['chandrasekharharshul@gmail.com','harshuc.2019@vitstudent.ac.in','nitlog8@gmail.com']
 
-const mail = (message,callback) => {
+
+const mail = (message,mailIds,callback) => {
     console.log(message)  
     var mailOptions = {
         from: 'testharshul@gmail.com',
